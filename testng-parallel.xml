@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Test-methodSuite" parallel="methods" thread-count="4">
+    <test name="Parallel 1">
+        <classes>
+            <class name ="Lecture14.Lecture14ParallelTests"/>
+            <class name ="Lecture14.Lecture14S"/>
+        </classes>
+    </test>
+</suite>
