@@ -1,5 +1,3 @@
-package Lecture14;
-
 import org.testng.annotations.Test;
 
 public class Lecture14S {
