@@ -48,7 +48,7 @@ public class LoginPage {
         this.passwordField.sendKeys(password);
     }
 
-    public void clickSignIn(){
+    public void clickSignInOnLoginPage(){
         this.loginButton.click();
     }
 

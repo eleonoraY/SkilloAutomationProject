@@ -1,5 +1,6 @@
 package Lecture20.page.factory;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -19,6 +20,12 @@ public class Header {
     private WebElement loginLink;
     @FindBy(id = "nav-link-home")
     private WebElement homeLink;
+    @FindBy(id = "search-bar")
+    private WebElement searchInput;
+    @FindBy(xpath = "//a[contains(text(),'TestUserUserUserUser')]")
+    private WebElement searchResult;
+    @FindBy(id="nav-link-new-post")
+    private WebElement newPostLink;
 
     public Header(WebDriver webDriver){
         this.webDriver = webDriver;
@@ -43,6 +50,12 @@ public class Header {
         this.homeLink.click();
     }
 
+    public void clickNewPostLink(){
+        WebDriverWait newPostLinkWait = new WebDriverWait(this.webDriver, Duration.ofSeconds(3));
+        newPostLinkWait.until(ExpectedConditions.elementToBeClickable(this.newPostLink));
+        this.newPostLink.click();
+    }
+
     // Combine logic for similar methods based on same actions with external general method
     public void clickHomeLinkWithHandle(){
         waitAndClick(this.homeLink);
@@ -64,6 +77,22 @@ public class Header {
         element.click();
     }
 
+    public void searchForUser(String username){
+        searchInput.sendKeys(username);
+
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(15));
+        WebElement dropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='dropdown-container']")));
+    }
+
+    public void clickOnSearchResult(String username){
+
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        WebElement dropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='dropdown-container']")));
+
+        WebElement userProfile = dropdown.findElement(By.xpath("//a[contains(text(), '" + username + "')]"));
+
+        userProfile.click();
+    }
 /*
     // logic demo for multiple elements with same actions
     public void clickMenuLink(String menuItem){

@@ -84,7 +84,7 @@ public class LoginTests {
         // fill login form
         login.populatePassword(password);
         login.populateUsername(username);
-        login.clickSignIn();
+        login.clickSignInOnLoginPage();
 
         // check the sing in message
         login.onSignInMessage(signInMessage);
@@ -119,7 +119,7 @@ public class LoginTests {
         // fill login form
         login.populatePassword(password);
         login.populateUsername(username);
-        login.clickSignIn();
+        login.clickSignInOnLoginPage();
 
         // check the sing in message
         String singInMessageActual = login.getSignInMessage();
