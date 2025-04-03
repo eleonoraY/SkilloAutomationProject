@@ -1,4 +1,4 @@
-package Lecture20.page.factory;
+package PageFactory;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
@@ -13,7 +13,6 @@ import org.testng.Assert;
 import java.time.Duration;
 
 public class ProfilePage{
-    public static final String PAGE_URL = "http://training.skillo-bg.com:4200/users/9206";
     public static final String PAGE_URL_WITHOUT_USER_ID = "http://training.skillo-bg.com:4200/users/";
     private final WebDriver webDriver;
     private final Header header;
@@ -27,18 +26,44 @@ public class ProfilePage{
     @FindBy(xpath = "//button[contains(text(),'Unfollow')]")
     private WebElement unFollowButton;
 
-    @FindBy(id="following")
-    private WebElement followingLink;
-
     @FindBy(xpath = "//li[@id='following']//strong")
     private WebElement followingCount;
 
+    @FindBy(xpath = "//div[@class='post-img']")
+    private WebElement uploadedFile;
+
+    @FindBy(xpath = "//i[contains(@class,'fas fa-unlock ng-star-inserted')]")
+    private WebElement lockButton;
+
+    @FindBy(id = "search-bar")
+    private WebElement searchBar;
+
+    @FindBy(xpath = "//div[@class='dropdown-container']")
+    private WebElement dropdown;
 
 
     public ProfilePage(WebDriver webDriver){
         this.webDriver = webDriver;
         PageFactory.initElements(webDriver, this);
        this.header = new Header(webDriver);
+    }
+
+    public void clearSearchBar() {
+        searchBar.clear();
+    }
+
+    public void clickUploadedFile() {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(uploadedFile)).click();
+    }
+
+    public void clickLockButton() {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(lockButton)).click();
+    }
+
+    public boolean isFileStillVisible() {
+        return webDriver.findElements(By.xpath("//div[@class='post-img']" )).isEmpty();
     }
 
     public boolean isUrlLoaded(int userId){
@@ -67,16 +92,13 @@ public class ProfilePage{
         searchInput.sendKeys(username);
 
         WebDriverWait wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(15));
-        WebElement dropdown = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='dropdown-container']")));
         Assert.assertTrue(dropdown.isDisplayed(), "Dropdown is not displayed");
-
-
 
         WebElement userProfile = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(text(), '" + username + "')]")));
         Assert.assertTrue(userProfile.isDisplayed(), "User label is not displayed");
 
         userProfile.click();
-
+        wait.until(ExpectedConditions.urlContains("users"));
     }
 
     public void clickFollowButton(){
@@ -118,10 +140,6 @@ public class ProfilePage{
             System.out.println("Following count is not visible. Inner exception: " + e);
             return -1;
         }
-    }
-    public WebElement getFollowingCountElement() {
-        WebDriverWait wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(5));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='following-count']")));
     }
 
     public void navigateToMyProfile(){

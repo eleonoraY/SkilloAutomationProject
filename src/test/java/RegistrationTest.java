@@ -1,4 +1,5 @@
-import Lecture20.page.factory.*;
+import PageFactory.Header;
+import PageFactory.HomePage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
@@ -8,70 +9,25 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
-import Lecture20.page.factory.RegistrationPage;
+import PageFactory.RegistrationPage;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 
-public class RegistrationTest {
-    private WebDriver webDriver;
-    private WebDriverWait wait;
-    private static final String TEST_RESOURCES_DIR = "src/test/java/resources/";
-    private static final String SCREENSHOT_DIR = TEST_RESOURCES_DIR.concat("screenshots/");
-
-    @BeforeSuite
-    protected void setupTestSuite() throws IOException {
-        WebDriverManager.chromedriver().setup();
-        cleanDirectory(SCREENSHOT_DIR);
-    }
+public class RegistrationTest extends TestObject{
 
     @BeforeMethod
-    protected void setUpTest() {
-        webDriver = new ChromeDriver();
-        webDriver.manage().window().maximize();
-        webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+    public void setupTest() {
+        wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(10));
         webDriver.navigate().to("http://training.skillo-bg.com:4200/users/register");
-    }
-
-    @AfterMethod
-    protected void tearDownTest(ITestResult testResult) {
-        takeScreenshot(testResult);
-        if (webDriver != null) {
-            webDriver.quit();
-        }
-    }
-
-    private void cleanDirectory(String directoryPath) throws IOException {
-        File directory = new File(directoryPath);
-        if (directory.exists() && directory.isDirectory()) {
-            FileUtils.cleanDirectory(directory);
-            System.out.printf("All files are deleted in Directory: %s%n", directoryPath);
-        }
-    }
-
-    private void takeScreenshot(ITestResult testResult) {
-        if (ITestResult.FAILURE == testResult.getStatus() && webDriver != null) {
-            try {
-                File screenshot = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-                String testName = testResult.getName();
-                for (Object param : testResult.getParameters()) {
-                    testName = testName + "_" + param;
-                }
-                FileUtils.copyFile(screenshot, new File(SCREENSHOT_DIR.concat(testName).concat(".jpg")));
-            } catch (IOException ex) {
-                System.out.println("Unable to create a screenshot file: " + ex.getMessage());
-            }
-        }
     }
 
     @DataProvider(name = "userRegistrations")
     public Object[][] userRegistrations() {
         return new Object[][]{
-                {"mihovaTestUser", "yax@amgens.com", "123456", "123456"},
-                {"eliTestUser", "960@amgens.com", "123qwe", "123qwe"}
+                {"testuser04", "testuser04@mail.com", "Pass@1234", "Pass@1234"},
+                {"user_test04", "user.test04@mail.com", "SecurePass1!", "SecurePass1!"}
         };
     }
 
