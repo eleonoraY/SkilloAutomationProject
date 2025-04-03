@@ -1,4 +1,4 @@
-package Lecture20.page.factory;
+package PageFactory;
 
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +24,9 @@ public class RegistrationPage {
     private WebElement confirmPasswordRegistrationField;
     @FindBy(id = "sign-in-button")
     private WebElement signInButton;
+
+
+
 
 
     public RegistrationPage(WebDriver webDriver){
@@ -56,6 +59,4 @@ public class RegistrationPage {
     public void clickSignInOnRegistrationPage(){
         this.signInButton.click();
     }
-
-
 }

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suite name="Test-methodSuite" parallel="methods" thread-count="2">
-    <groups>
-        <run>
-            <include name="smoke"/>
-        </run>
-    </groups>
+<suite name="AutomationTestSuite">
+<test name="RegressionTests">
+    <classes>
+        <class name="FileStatusTest"/>
+        <class name="FollowUnfollowUserTest"/>
+        <class name="RegistrationTest"/>
+        <class name="SearchFunctionalityOnMainMenu"/>
+        <class name="UploadFileTest"/>
+    </classes>
+</test>
 </suite>
