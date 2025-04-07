@@ -24,17 +24,17 @@ public class SearchFunctionalityOnMainMenu extends TestObject{
     public void testSearchUser() {
         header.searchForUser(TARGET_USER);
 
-        WebElement dropdown = wait.until(ExpectedConditions.elementToBeClickable(header.getDropdownContainer()));
+        WebElement dropdown = header.getDropdownContainer();
         Assert.assertTrue(dropdown.isDisplayed(), "Dropdown with results is not visible");
 
-        WebElement searchResult = wait.until(ExpectedConditions.elementToBeClickable(header.getSearchResult(TARGET_USER)));
+        WebElement searchResult = header.waitForSearchResultToBeClickable(TARGET_USER, 10);
         Assert.assertTrue(searchResult.isDisplayed(), "Search result does not contain expected username");
     }
 
     @Test(priority = 2)
     public void testClickOnSearchResult() {
         header.searchForUser(TARGET_USER);
-        WebElement searchResult = wait.until(ExpectedConditions.elementToBeClickable(header.getSearchResult(TARGET_USER)));
+        WebElement searchResult = header.waitForSearchResultToBeClickable(TARGET_USER, 10);
         Assert.assertTrue(searchResult.isDisplayed(), "Search result does not contain expected username");
 
         header.clickOnSearchResult(TARGET_USER);
@@ -46,7 +46,7 @@ public class SearchFunctionalityOnMainMenu extends TestObject{
         String caseInsensitiveUsername = "TESTUsEruseruseruser";
         header.searchForUser(caseInsensitiveUsername);
 
-        WebElement searchResult = wait.until(ExpectedConditions.elementToBeClickable(header.getSearchResult(TARGET_USER)));
+        WebElement searchResult = header.waitForSearchResultToBeClickable(TARGET_USER, 10);
         Assert.assertTrue(searchResult.isDisplayed(), "Case-insensitive search did not return expected results");
     }
 
@@ -55,7 +55,7 @@ public class SearchFunctionalityOnMainMenu extends TestObject{
         String partialUsername = "tes";
         header.searchForUser(partialUsername);
 
-        WebElement searchResult = wait.until(ExpectedConditions.elementToBeClickable(header.getSearchResult(TARGET_USER)));
+        WebElement searchResult = header.waitForSearchResultToBeClickable(TARGET_USER, 10);
         Assert.assertTrue(searchResult.isDisplayed(), "Partial search did not return expected results");
     }
 }

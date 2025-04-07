@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suite name="AutomationTestSuite">
-<test name="RegressionTests">
-    <classes>
-        <class name="FileStatusTest"/>
-        <class name="FollowUnfollowUserTest"/>
-        <class name="RegistrationTest"/>
-        <class name="SearchFunctionalityOnMainMenu"/>
-        <class name="UploadFileTest"/>
-    </classes>
-</test>
+<suite name="AutomationTestSuite" parallel="classes" thread-count="2">
+    <test name="RegressionTests">
+        <classes>
+            <class name="FollowUnfollowUserTest"/>
+            <class name="SearchFunctionalityOnMainMenu"/>
+            <class name="UploadFileTest"/>
+            <class name="ChangeFileStatusToPrivateTest"/>
+            <class name="RegistrationTest"/>
+        </classes>
+    </test>
 </suite>

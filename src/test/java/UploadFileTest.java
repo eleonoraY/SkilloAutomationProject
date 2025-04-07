@@ -22,13 +22,6 @@ public class UploadFileTest extends TestObject{
     private final String FILE_DESCRIPTION = "Sweet bug file";
 
 
-    @BeforeMethod
-    public void setupTest(){
-        super.setupTest();
-        newPostPage = new NewPostPage(this.webDriver);
-    }
-
-
     @Test
     public void testUploadFile(){
         header.clickNewPostLink();

@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.time.Duration;
+import java.util.List;
 
 public class ProfilePage{
     public static final String PAGE_URL_WITHOUT_USER_ID = "http://training.skillo-bg.com:4200/users/";
@@ -32,10 +33,13 @@ public class ProfilePage{
     @FindBy(xpath = "//div[@class='post-img']")
     private WebElement uploadedFile;
 
+    @FindBy(xpath="//div[@class='post-img']")
+    private List<WebElement> uploadedFiles;
+
     @FindBy(xpath = "//i[contains(@class,'fas fa-unlock ng-star-inserted')]")
     private WebElement lockButton;
 
-    @FindBy(id = "search-bar")
+    @FindBy(xpath = "//input[@id='search-bar']")
     private WebElement searchBar;
 
     @FindBy(xpath = "//div[@class='dropdown-container']")
@@ -60,10 +64,13 @@ public class ProfilePage{
     public void clickLockButton() {
         WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(lockButton)).click();
+
+        wait.until(ExpectedConditions.invisibilityOf(uploadedFile));
+
     }
 
     public boolean isFileStillVisible() {
-        return webDriver.findElements(By.xpath("//div[@class='post-img']" )).isEmpty();
+        return !uploadedFiles.isEmpty();
     }
 
     public boolean isUrlLoaded(int userId){
@@ -88,8 +95,7 @@ public class ProfilePage{
     }
 
     public void searchAndOpenUserProfile(String username){
-        WebElement searchInput = this.webDriver.findElement(By.id("search-bar"));
-        searchInput.sendKeys(username);
+        searchBar.sendKeys(username);
 
         WebDriverWait wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(15));
         Assert.assertTrue(dropdown.isDisplayed(), "Dropdown is not displayed");
@@ -144,6 +150,18 @@ public class ProfilePage{
 
     public void navigateToMyProfile(){
         header.clickProfileLink();
+    }
+
+    public void waitForFollowingCountToUpdate(int oldCount) {
+        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
+        wait.until(webDriver -> {
+            try {
+                int currentCount = Integer.parseInt(followingCount.getText().trim());
+                return currentCount != oldCount;
+            } catch (Exception e) {
+                return false;
+            }
+        });
     }
 
     

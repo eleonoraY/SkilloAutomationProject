@@ -33,45 +33,59 @@ public class Header {
     }
 
     public void clickProfileLink(){
-        WebDriverWait profilePageLinkWait = new WebDriverWait(this.webDriver, Duration.ofSeconds(3));
-        profilePageLinkWait.until(ExpectedConditions.elementToBeClickable(this.profileLink));
+        waitForElementToBeClickable(this.profileLink, 3);
         this.profileLink.click();
     }
 
 
     public void clickNewPostLink(){
-        WebDriverWait newPostLinkWait = new WebDriverWait(this.webDriver, Duration.ofSeconds(3));
-        newPostLinkWait.until(ExpectedConditions.elementToBeClickable(this.newPostLink));
+        waitForElementToBeClickable(this.newPostLink, 3);
         this.newPostLink.click();
     }
 
 
     public void clickProfileLinkWithHandle(){
-        waitAndClick(this.profileLink);
+        waitForElementToBeClickable(this.profileLink, 3);
+        this.profileLink.click();
     }
 
-    private void waitAndClick(WebElement element){
-        try {
-            WebDriverWait pageLinkWait = new WebDriverWait(this.webDriver, Duration.ofSeconds(3));
-            pageLinkWait.until(ExpectedConditions.elementToBeClickable(element));
-        }catch(TimeoutException exception){
-            Assert.fail("Header navigation link is not found. Inner exception: " + exception);
+
+
+    private void waitForElementToBeClickable(WebElement element, int timeoutSeconds){
+        try{
+            new WebDriverWait(webDriver, Duration.ofSeconds(timeoutSeconds)).until(ExpectedConditions.elementToBeClickable(element));
+        } catch (TimeoutException e) {
+            Assert.fail("Element was not clickable within " + timeoutSeconds + " seconds. Inner exception: " + e);
         }
-        element.click();
+    }
+
+    private void waitForElementToBeVisible(WebElement element, int timeoutSeconds){
+        try{
+            new WebDriverWait(webDriver, Duration.ofSeconds(timeoutSeconds)).until(ExpectedConditions.visibilityOf(element));
+        } catch (TimeoutException e) {
+            Assert.fail("Element was not visible within " + timeoutSeconds + " seconds. Inner exception: " + e);
+        }
     }
 
 public void searchForUser(String username){
     searchInput.sendKeys(username);
+    waitForElementToBeVisible(dropdownContainer, 15);
+}
 
-    WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(15));
-    wait.until(ExpectedConditions.visibilityOf(dropdownContainer));
+public WebElement waitForSearchResultToBeClickable(String username, int timeoutSeconds){
+        WebElement result = getSearchResult(username);
+        if(result==null) {
+            Assert.fail("No search result found for user: " + username);
+        }
+
+        waitForElementToBeClickable(result, timeoutSeconds);
+        return result;
 }
 
 
 public void clickOnSearchResult(String username){
 
-    WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(10));
-    wait.until(ExpectedConditions.visibilityOf(dropdownContainer));
+   waitForElementToBeVisible(dropdownContainer, 10);
 
     for (WebElement result : searchResults) {
         if (result.getText().contains(username)) {

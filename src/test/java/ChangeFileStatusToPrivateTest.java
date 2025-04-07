@@ -1,24 +1,7 @@
-import PageFactory.Header;
-import PageFactory.HomePage;
-import PageFactory.LoginPage;
-import PageFactory.ProfilePage;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.*;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.Duration;
-
-public class FileStatusTest extends TestObject{
-
-
+public class ChangeFileStatusToPrivateTest extends TestObject{
 
     @BeforeMethod
     public void setupTest(){
@@ -36,6 +19,4 @@ public class FileStatusTest extends TestObject{
         boolean isFileStillVisible = profilePage.isFileStillVisible();
         Assert.assertFalse(isFileStillVisible, "File should not be visible in the public list");
     }
-
-
 }
