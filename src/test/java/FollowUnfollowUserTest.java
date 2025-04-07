@@ -19,38 +19,9 @@ import java.time.Duration;
 
 public class FollowUnfollowUserTest extends TestObject {
 
-    @BeforeClass
-    public void setupTestSuite() throws IOException {
-        cleanDirectory(SCREENSHOT_DIR);
-
-        WebDriverManager.chromedriver().setup();
-        this.webDriver = new ChromeDriver();
-        this.webDriver.manage().window().maximize();
-        this.webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
-        this.webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-        this.wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(10));
-
-        this.homePage = new HomePage(this.webDriver);
-        this.profilePage = new ProfilePage(this.webDriver);
-        this.header = new Header(this.webDriver);
-        this.loginPage = new LoginPage(this.webDriver);
-
-        this.webDriver.navigate().to(LoginPage.PAGE_URL);
-        this.loginPage.populateUsername(USERNAME);
-        this.loginPage.populatePassword(PASSWORD);
-        this.loginPage.clickSignInOnLoginPage();
-
-        Assert.assertTrue(homePage.isUrlLoaded(), "Home page is not loaded");
-    }
-
     @BeforeMethod
     public void setupTest() {
-        wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(10));
-
-        this.profilePage = new ProfilePage(this.webDriver);
-        this.header = new Header(this.webDriver);
-
+        super.setupTest();
         profilePage.clearSearchBar();
 
     }
@@ -72,11 +43,14 @@ public class FollowUnfollowUserTest extends TestObject {
 
         if (profilePage.isUnfollowButtonVisible()) {
             profilePage.clickUnfollowButton();
+            profilePage.waitForFollowingCountToUpdate(initialFollowingCount);
             Assert.assertFalse(profilePage.isUnfollowButtonVisible(), "Unfollow button should not be visible after unfollowing");
             initialFollowingCount = profilePage.getFollowingCount();
         }
 
         profilePage.clickFollowButton();
+        profilePage.waitForFollowingCountToUpdate(initialFollowingCount);
+
         Assert.assertTrue(profilePage.isUnfollowButtonVisible(), "Follow button did not change to Unfollow");
 
         profilePage.navigateToMyProfile();
@@ -96,6 +70,8 @@ public class FollowUnfollowUserTest extends TestObject {
 
         profilePage.searchAndOpenUserProfile(targetUser);
         profilePage.clickUnfollowButton();
+        profilePage.waitForFollowingCountToUpdate(initialFollowingCount);
+
         Assert.assertTrue(profilePage.isFollowButtonVisible(), "Unfollow button did not change to Follow");
 
         profilePage.navigateToMyProfile();

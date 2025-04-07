@@ -1,12 +1,10 @@
-import PageFactory.Header;
-import PageFactory.HomePage;
-import PageFactory.LoginPage;
-import PageFactory.ProfilePage;
+import PageFactory.*;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -22,39 +20,46 @@ public class TestObject {
     public static final String TEST_RESOURCES_DIR = "src/test/java/resources/";
     public static final String SCREENSHOT_DIR = TEST_RESOURCES_DIR.concat("screenshots/");
 
-    protected WebDriver webDriver;
+    private static final ThreadLocal<WebDriver> threadLocalDriver = new ThreadLocal<>();
     protected WebDriverWait wait;
     protected HomePage homePage;
     protected Header header;
     protected ProfilePage profilePage;
     protected LoginPage loginPage;
+    protected NewPostPage newPostPage;
 
     protected final String USERNAME = "yovcheva.e@gmail.com";
     protected final String PASSWORD = "123456";
 
-    @BeforeClass
+    protected WebDriver getDriver(){
+        return threadLocalDriver.get();
+    }
+
+    @BeforeSuite
     public void setupTestSuite() throws IOException {
         cleanDirectory(SCREENSHOT_DIR);
-
         WebDriverManager.chromedriver().setup();
-        this.webDriver = new ChromeDriver();
-        this.webDriver.manage().window().maximize();
-        this.webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-        this.webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
-
-        this.wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(10));
     }
+
 
     @BeforeMethod
     public void setupTest() {
-        wait = new WebDriverWait(this.webDriver, Duration.ofSeconds(10));
-        this.homePage = new HomePage(this.webDriver);
-        this.profilePage = new ProfilePage(this.webDriver);
-        this.header = new Header(this.webDriver);
-        this.loginPage = new LoginPage(webDriver);
+        WebDriver driver = new ChromeDriver();
+        threadLocalDriver.set(driver);
 
-        this.webDriver.navigate().to(LoginPage.PAGE_URL);
+        driver.manage().window().maximize();
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+        this.homePage = new HomePage(driver);
+        this.profilePage = new ProfilePage(driver);
+        this.header = new Header(driver);
+        this.newPostPage = new NewPostPage(driver);
+        this.loginPage = new LoginPage(driver);
+
+        driver.navigate().to(LoginPage.PAGE_URL);
         this.loginPage.populateUsername(USERNAME);
         this.loginPage.populatePassword(PASSWORD);
         this.loginPage.clickSignInOnLoginPage();
@@ -65,14 +70,16 @@ public class TestObject {
     @AfterMethod
     public void tearDownTest(ITestResult testResult) {
         takeScreenshot(testResult);
+
+        WebDriver driver = getDriver();
+        if (driver != null) {
+            driver.quit();
+        }
+        threadLocalDriver.remove();
+
     }
 
     @AfterClass
-    public void quitDriver() {
-        if (this.webDriver != null) {
-            this.webDriver.quit();
-        }
-    }
 
     public void cleanDirectory(String directoryPath) throws IOException {
         File directory = new File(directoryPath);
@@ -91,7 +98,7 @@ public class TestObject {
     private void takeScreenshot(ITestResult testResult){
         if (ITestResult.FAILURE == testResult.getStatus()){
             try {
-                TakesScreenshot takesScreenshot = (TakesScreenshot) webDriver;
+                TakesScreenshot takesScreenshot = (TakesScreenshot) getDriver();
                 File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
                 String testName = testResult.getName();
                 for(Object param : testResult.getParameters()){
