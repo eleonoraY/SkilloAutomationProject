@@ -8,8 +8,8 @@ public class LoginTest extends TestObject {
         // (Placeholder for setting up test data or navigating to login page if not in TestObject)
 
         // Act
-        // loginPage.enterUsername(USERNAME);
-        // loginPage.enterPassword(PASSWORD);
+        // loginPage.enterUsername("placeholder_user");
+        // loginPage.enterPassword("placeholder_password");
         // loginPage.clickLoginButton();
 
         // Assert

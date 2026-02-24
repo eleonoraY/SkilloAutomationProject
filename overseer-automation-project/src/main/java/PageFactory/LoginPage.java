@@ -6,16 +6,15 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 public class LoginPage {
-    public static final String PAGE_URL = "http://placeholder-url.com/login";
     private final WebDriver webDriver;
 
-    @FindBy(id = "username_placeholder")
+    @FindBy(id = "placeholder_id_1")
     private WebElement usernameField;
 
-    @FindBy(id = "password_placeholder")
+    @FindBy(name = "placeholder_name_1")
     private WebElement passwordField;
 
-    @FindBy(id = "login_button_placeholder")
+    @FindBy(xpath = "//placeholder_xpath_1")
     private WebElement loginButton;
 
     public LoginPage(WebDriver webDriver) {
