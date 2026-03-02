@@ -1,9 +1,9 @@
 import PageFactory.*;
+import ApiHelpers.PublicApiHelper;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 
 import java.time.Duration;
@@ -14,6 +14,11 @@ public class TestObject {
 
     // Page Objects
     protected LoginPage loginPage;
+    protected CasesPage casesPage;
+    protected CaseDetailsPage caseDetailsPage;
+
+    // API Helpers
+    protected PublicApiHelper publicApiHelper;
 
     protected WebDriver getDriver(){
         return threadLocalDriver.get();
@@ -35,7 +40,17 @@ public class TestObject {
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
+        // Initialize Page Objects
         this.loginPage = new LoginPage(driver);
+        this.casesPage = new CasesPage(driver);
+        this.caseDetailsPage = new CaseDetailsPage(driver);
+
+        // Initialize API Helper with placeholders
+        this.publicApiHelper = new PublicApiHelper(
+            "https://base-public-api-dev.azurewebsites.net",
+            "placeholder_client_id",
+            "placeholder_client_secret"
+        );
     }
 
     @AfterMethod
