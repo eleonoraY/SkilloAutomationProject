@@ -39,7 +39,7 @@ public class TestObject {
     }
 
     @AfterMethod
-    public void tearDownTest(ITestResult testResult) {
+    public void tearDownTest() {
         WebDriver driver = getDriver();
         if (driver != null) {
             driver.quit();
